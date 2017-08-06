@@ -1,0 +1,24 @@
+{% load staticfiles %}<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Jessica Jones Story</title>
+	<meta name=viewport content="width=device-width,initial-scale=1">
+    <link rel="icon" href="{% static 'favicon/favicon.ico'%}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{% static 'favicon/favicon.ico'%}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{% static 'favicon/apple-touch-icon-60.png'%}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'favicon/apple-touch-icon-76.png'%}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static 'favicon/apple-touch-icon-120.png'%}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'favicon/apple-touch-icon-152.png'%}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon-180.png'%}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}" />
+</head>
+<body>
+<div id="fullpage">
+    {% block content %}{% endblock %}
+</div>
+<script type="text/javascript" src="{% static 'js/plugins.js'%}"></script>
+<script type="text/javascript"  src="{% static 'js/main.js'%}"></script>
+{% block footer %}{% endblock %}
+</body>
+</html>

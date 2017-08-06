@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+
+{% block content %}
+	<div class="section " id="section1">
+		<div class="attribution">
+			{{ about.attributionText }}
+		</div>
+		<div class="content-wrap">
+			<div class="content content--layout content--layout-3">
+				<a class="icon-marvel-logo logo" title="home" alt="home"></a>
+                {% for about in about.data.results %}
+					<img class="content__img" src="{{ about.thumbnail.path }}.{{ about.thumbnail.extension }}">
+					<h3 class="content__title"><span>{{ about.name }}</span></h3>
+                {% endfor %}
+				{% for comic in comics.data.results %}
+					<p class="content__desc">{{ comic.title }}</p>
+                {% endfor %}
+				<a href="#story" data-menuanchor="story" class="content__link btn btn-red">
+					<span>Read on!</span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="section story" id="section2">
+		<div class="wrap">
+			<div class="box">
+				<h1 class="title">Story</h1>
+				{% for comic in comics.data.results %}
+					<p>{{ comic.description }}</p>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<div class="section moveDown characters" id="section3">
+		<h1 class="title">
+			Characters<span>Select</span>
+		</h1>
+		<div class="content">
+			<div class="slideshow">
+				{% for character in characters.data.results %}
+					<div id="slide-{{forloop.counter}}" class="slide" style="background-image: url({{ character.thumbnail.path }}.{{ character.thumbnail.extension }})"></div>
+					{% if forloop.first %}
+						<div class="pieces" style="background-image: url({{ character.thumbnail.path }}.{{ character.thumbnail.extension }})"></div>
+					{% endif %}
+				{% endfor %}
+			</div>
+			<nav class="menu">
+				{% for character in characters.data.results %}
+					<a class="menu__item {% if forloop.first %}menu__item--current{% endif %}" href="#slide-{{forloop.counter}}" data-image="{{ character.thumbnail.path }}.{{ character.thumbnail.extension }}">
+						{{ character.name }}
+					</a>
+				{% endfor %}
+			</nav>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+<script>
+$(document).ready(function() {
+
+	// fullpage navigation
+	$('#fullpage').fullpage({
+		'verticalCentered': false,
+		'css3': true,
+		'sectionsColor': ['#000201', '#000201', 'rgb(73, 73, 73)'],
+		'anchors': ['home', 'story', 'characters'],
+		'navigation': true,
+		'navigationPosition': 'right',
+		'navigationTooltips': ['Home', 'Description', 'Characters']
+	});
+
+	// characters pictures pieces
+	imagesLoaded(document.body, { background: true }, () => document.body.classList.remove('loading'));
+	const menuItems = Array.from(document.querySelectorAll('.menu > .menu__item'));
+	const piecesObj = new Pieces(document.querySelector('.slideshow > .pieces'), {
+		pieces: {rows: 10, columns: 10},
+		delay: [0,40],
+		hasTilt: true,
+		tilt: {
+			maxRotationX: -10,
+			maxRotationY: -10,
+			maxTranslationX: -10,
+			maxTranslationY: -10
+		}
+	});
+	let isAnimating = false;
+	let current = 0;
+	const openImage = (ev, item, pos) => {
+		ev.preventDefault();
+		if ( isAnimating || current === pos ) {
+			return false;
+		}
+		isAnimating = true;
+		menuItems[current].classList.remove('menu__item--current');
+		current = pos;
+		menuItems[current].classList.add('menu__item--current');
+		const imgsrc = item.dataset.image;
+
+		piecesObj.animate({
+			duration: 200,
+			easing: 'easeOutQuad',
+			delay: (t,i,l) => {
+				return parseInt(t.dataset.row) * parseInt(t.dataset.delay);
+			},
+			translateX: (t,i) => {
+				return anime.random(-50,50)+'px';
+			},
+			translateY: (t,i) => {
+				return anime.random(-800,-200)+'px';
+			},
+			rotateZ: (t,i) => {
+				return anime.random(-45,45)+'deg';
+			},
+			opacity: 0,
+			complete: () => {
+				piecesObj.setImage(imgsrc);
+
+				piecesObj.animate({
+					duration: 500,
+					easing: [0.3,1,0.3,1],
+					delay: (t,i,l) => {
+						return parseInt(t.dataset.row) * parseInt(t.dataset.delay);
+					},
+					translateX: 0,
+					translateY: () => {
+						return [anime.random(200,800)+'px','0px'];
+					},
+					rotateZ: 0,
+					opacity: {
+						value: 1,
+						duration: 500,
+						easing: 'linear'
+					},
+					complete: () => {
+						isAnimating = false;
+					}
+				});
+			}
+		});
+	};
+	menuItems.forEach((item,pos) => item.addEventListener('click', (ev) => openImage(ev,item,pos)));
+});
+</script>
+{% endblock %}
