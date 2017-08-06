@@ -29,7 +29,10 @@ $ heroku local
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
 Or other port:
+
+```sh
 $ heroku local -p 5002
+```
 
 ## Deploying to Heroku
 
