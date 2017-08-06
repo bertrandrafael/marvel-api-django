@@ -22,4 +22,5 @@
 # ``shelve``, ``marshal``, ``anydbm``, & ``bsddb``
 # (among others).
 
+gettingstarted/staticfiles/admin/* linguist-vendored
 marvel/static/* linguist-vendored
